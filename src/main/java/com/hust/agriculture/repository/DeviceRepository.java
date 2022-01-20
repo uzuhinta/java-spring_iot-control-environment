@@ -53,10 +53,4 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
                     "and lower(d.farm.name) like lower(concat('%', :key, '%')) order by d.ID desc"
     )
     Page<Device> findDevices(Pageable pageable, @Param("status") Integer status, @Param("key") String key);
-
-    @Query(
-            value = "select d from Device d join d.crop where d.crop is not null and d.crop.status = :status " +
-                    "and lower(d.crop.name) like lower(concat('%', :key, '%')) order by d.crop.name desc"
-    )
-    Page<Device> findDevicesCrop(Pageable pageable, @Param("status") Integer status, @Param("key") String key);
 }

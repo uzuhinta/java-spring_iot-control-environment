@@ -37,10 +37,6 @@ public class Device implements Serializable {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "CROP_ID", referencedColumnName = "ID")
-    private Crop crop;
-
     @Column(name = "CREATED_AT", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
@@ -53,14 +49,6 @@ public class Device implements Serializable {
 
     @Column(name = "STATUS")
     private Integer status;
-
-    public Crop getCrop() {
-        return crop;
-    }
-
-    public void setCrop(Crop crop) {
-        this.crop = crop;
-    }
 
     public String getTopicName() {
         return topicName;

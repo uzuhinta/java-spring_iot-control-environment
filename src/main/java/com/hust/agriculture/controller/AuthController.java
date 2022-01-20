@@ -1,12 +1,10 @@
 package com.hust.agriculture.controller;
 
 import com.hust.agriculture.common.Constant;
-import com.hust.agriculture.model.User;
 import com.hust.agriculture.payload.request.Account;
 import com.hust.agriculture.payload.request.AccountCredentials;
 import com.hust.agriculture.payload.response.ResponseBean;
 import com.hust.agriculture.security.JwtTokenProvider;
-import com.hust.agriculture.service.httpservice.InvoiceService;
 import com.hust.agriculture.service.httpservice.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +19,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 @RestController
@@ -39,9 +36,6 @@ public class AuthController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    InvoiceService invoiceService;
-
     @PostMapping("/signIn")
     public ResponseEntity signIn(@RequestBody AccountCredentials credentials){
         ResponseBean bean = new ResponseBean();
@@ -57,10 +51,6 @@ public class AuthController {
             String role = sga.getAuthority();
             String jwt = jwtTokenProvider.generateUserToken(credentials.getUsername(), role);
             String topicName = userService.generateTopicName(credentials.getUsername());
-
-            if(invoiceService.isHasInvoiceOverDueDate(credentials.getUsername())){
-                bean.addData("alert", Constant.MSG_UNPAID_INVOICES);
-            }
 
             bean.setError(Constant.ERROR_CODE_OK);
             bean.setMessage(Constant.MSG_SIGN_IN_OK);

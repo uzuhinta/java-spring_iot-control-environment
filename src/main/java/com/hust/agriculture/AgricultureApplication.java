@@ -32,11 +32,22 @@ public class AgricultureApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
         //        create user role
-        Role userRole = new Role();
-        userRole.setName("CUSTOMER");
-        roleRepository.saveAndFlush(userRole);
-        //        create admin role
+        Role customerRole = new Role();
+        customerRole.setName("CUSTOMER");
+
+        User customerAccount = new User();
+        customerAccount.setUsername("quannar1781");
+        String password = passwordEncoder.encode("123456");
+        customerAccount.setPassword(password);
+        customerAccount.setAddress("Hoang Mai, HCUSTOMERN");
+        customerAccount.setFullName("Ba QuanCUSTOMER");
+        customerAccount.setEmail("quannar1781@gmail.com");
+        customerAccount.setPhoneNumber("0858519");
+        customerAccount.setStatus(Constant.STATUS_ACTIVE);
+        customerAccount.setRole(customerRole);
+        userRepository.save(customerAccount);
 
         Role adminRole = new Role();
         adminRole.setName("ADMIN");
@@ -45,7 +56,6 @@ public class AgricultureApplication implements CommandLineRunner {
         //
         User adminAccount = new User();
         adminAccount.setUsername("quannar178");
-        String password = passwordEncoder.encode("123456");
         System.out.println("password" + password);
         adminAccount.setPassword(password);
         adminAccount.setAddress("Hoang Mai, HN");
@@ -55,6 +65,10 @@ public class AgricultureApplication implements CommandLineRunner {
         adminAccount.setStatus(Constant.STATUS_ACTIVE);
         adminAccount.setRole(adminRole);
         userRepository.save(adminAccount);
+
+        Role techniqueRole = new Role();
+        techniqueRole.setName("TECHNIQUE");
+        roleRepository.saveAndFlush(techniqueRole);
 
     }
 }

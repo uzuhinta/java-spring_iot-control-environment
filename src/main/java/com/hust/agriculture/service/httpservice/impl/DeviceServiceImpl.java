@@ -9,7 +9,6 @@ import com.hust.agriculture.payload.request.ControlMQTT;
 import com.hust.agriculture.payload.response.ResponseBean;
 import com.hust.agriculture.repository.DeviceRepository;
 import com.hust.agriculture.service.httpservice.DeviceService;
-import com.hust.agriculture.service.mqttservice.MqttControlService;
 import com.hust.agriculture.utils.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +34,6 @@ public class DeviceServiceImpl implements DeviceService {
     @Autowired
     DeviceRepository deviceRepository;
 
-    @Autowired
-    MqttControlService mqttControlService;
-
     @Override
     public void createDevice(String deviceName, ResponseBean bean) throws Exception {
         // check if device name is exists
@@ -61,7 +57,6 @@ public class DeviceServiceImpl implements DeviceService {
         device.setStatus(Constant.STATUS_ACTIVE);
         device.setTopicName(topicName);
         device.setFarm(null);
-        device.setCrop(null);
         deviceRepository.save(device);
 
         // response
@@ -168,34 +163,5 @@ public class DeviceServiceImpl implements DeviceService {
             return new ByteArrayInputStream(outputStream.toByteArray());
         }
         return null;
-    }
-
-    @Override
-    public void control(ResponseBean bean, User userActive, ControlMQTT controlMQTT) throws Exception {
-        User user = deviceRepository.findUserByDeviceId(controlMQTT.getDeviceId());
-        if(user != null){
-            if(user.getID() == userActive.getID()){
-                Device device = deviceRepository.findById(controlMQTT.getDeviceId()).orElse(null);
-                if(device != null) {
-                    boolean isOk = mqttControlService.publish(device.getTopicName(), CommonUtils.fromObject(controlMQTT, LOGGER));
-                    if(isOk){
-                        bean.setError(Constant.ERROR_CODE_OK);
-                        bean.setMessage(Constant.MSG_CONTROL_OK);
-                    }else{
-                        bean.setError(Constant.ERROR_CODE_NOK);
-                        bean.setMessage(Constant.MSG_CONTROL_NOK);
-                    }
-                }else {
-                    bean.setError(Constant.ERROR_CODE_NOK);
-                    bean.setMessage(Constant.MSG_DEVICE_ID_INVALID);
-                }
-            }else{
-                bean.setError(Constant.ERROR_CODE_NOK);
-                bean.setMessage(Constant.MSG_NOT_AUTHORIZATION);
-            }
-        }else {
-            bean.setError(Constant.ERROR_CODE_NOK);
-            bean.setMessage(Constant.MSG_NOT_AUTHORIZATION);
-        }
     }
 }

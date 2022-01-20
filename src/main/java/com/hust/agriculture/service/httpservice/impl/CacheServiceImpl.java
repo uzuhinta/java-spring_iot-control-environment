@@ -23,14 +23,6 @@ public class CacheServiceImpl implements CachingService {
     AppParamRepository appParamRepository;
 
     @Override
-    public DataMQTT getDataDevice(String key) {
-        synchronized (LOCK_DATA_DEVICE) {
-            DataMQTT dataMQTT = CACHE_DATA_DEVICE.get(key);
-            return dataMQTT;
-        }
-    }
-
-    @Override
     public void cacheData(DataMQTT dataMQTT) {
         synchronized (LOCK_DATA_DEVICE){
             CACHE_DATA_DEVICE.put(dataMQTT.getToken(), dataMQTT);

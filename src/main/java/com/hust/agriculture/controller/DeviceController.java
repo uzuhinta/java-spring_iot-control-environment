@@ -2,14 +2,12 @@ package com.hust.agriculture.controller;
 
 import com.hust.agriculture.common.Constant;
 import com.hust.agriculture.model.Device;
-import com.hust.agriculture.model.Farm;
 import com.hust.agriculture.model.User;
 import com.hust.agriculture.payload.request.ControlMQTT;
 import com.hust.agriculture.payload.request.DataMQTT;
 import com.hust.agriculture.payload.response.ResponseBean;
 import com.hust.agriculture.service.httpservice.CachingService;
 import com.hust.agriculture.service.httpservice.DeviceService;
-import com.hust.agriculture.service.httpservice.InvoiceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,30 +27,6 @@ public class DeviceController {
 
     @Autowired
     CachingService cachingService;
-
-    @Autowired
-    InvoiceService invoiceService;
-
-    @GetMapping("/devices/latest")
-    public ResponseEntity getLatestData(@RequestParam(name = "deviceId") Long deviceId){
-        ResponseBean bean = new ResponseBean();
-        try{
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            User userActive = (User) authentication.getPrincipal();
-            if(invoiceService.isHasInvoiceOverDueDate(userActive.getUsername())){
-                bean.setError(Constant.ERROR_CODE_NOK);
-                bean.setError(Constant.MSG_UNPAID_INVOICES);
-            }else {
-                DataMQTT dataMQTT = cachingService.getDataDevice(String.valueOf(deviceId));
-                bean.setError(Constant.ERROR_CODE_OK);
-                bean.addData("data", dataMQTT);
-            }
-        }catch (Exception e){
-            LOGGER.error(e.getMessage(), e);
-            bean.setMessage(Constant.MSG_SERVER_ERROR);
-        }
-        return ResponseEntity.ok(bean);
-    }
 
     @GetMapping("/devices")
     public ResponseEntity getALl(@RequestParam(required = false, name = "farmId") Long farmId){
@@ -123,23 +97,4 @@ public class DeviceController {
         return ResponseEntity.ok(bean);
     }
 
-    @RequestMapping(path = "/devices/control", method = RequestMethod.POST)
-    public ResponseEntity controlDevice(@RequestBody ControlMQTT controlMQTT) {
-
-        ResponseBean bean = new ResponseBean();
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            User userActive = (User) authentication.getPrincipal();
-            if(invoiceService.isHasInvoiceOverDueDate(userActive.getUsername())){
-                bean.setError(Constant.ERROR_CODE_NOK);
-                bean.setError(Constant.MSG_UNPAID_INVOICES);
-            }else {
-                deviceService.control(bean, userActive, controlMQTT);
-            }
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            bean.setMessage(Constant.MSG_SERVER_ERROR);
-        }
-        return ResponseEntity.ok(bean);
-    }
 }

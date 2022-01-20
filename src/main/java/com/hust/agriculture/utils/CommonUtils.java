@@ -18,12 +18,6 @@ public class CommonUtils {
         return false;
     }
 
-    public static String generateInvoiceName(Integer paymentType, String deviceName, String cropName, String username){
-        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
-        String date = sdf.format(new Date());
-        return paymentType + "-Invoice-" + username + "-" + cropName + "-" + deviceName;
-    }
-
     public static Date add(Integer day){
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, day);

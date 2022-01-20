@@ -2,7 +2,6 @@ package com.hust.agriculture.controller;
 
 import com.hust.agriculture.common.Constant;
 import com.hust.agriculture.payload.request.AccountCredentials;
-import com.hust.agriculture.payload.request.PaymentDTO;
 import com.hust.agriculture.payload.response.ResponseBean;
 import com.hust.agriculture.service.httpservice.*;
 import org.apache.poi.util.IOUtils;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -30,43 +28,6 @@ public class AdminController {
 
     @Autowired
     FarmService farmService;
-
-    @Autowired
-    PlantService plantService;
-
-    @Autowired
-    InvoiceService invoiceService;
-
-    @Autowired
-    PaymentService paymentService;
-
-    @Autowired
-    CropService cropService;
-
-    @RequestMapping(path = "/invoices/generate", method = RequestMethod.GET)
-    public ResponseEntity generateInvoices(){
-        ResponseBean bean = new ResponseBean();
-        try {
-            invoiceService.scheduleCreateInvoice();
-            bean.setError(Constant.ERROR_CODE_OK);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            bean.setMessage(Constant.MSG_SERVER_ERROR);
-        }
-        return ResponseEntity.ok(bean);
-    }
-
-    @RequestMapping(path = "/pay", method = RequestMethod.POST)
-    public ResponseEntity pay(@RequestBody PaymentDTO paymentDTO){
-        ResponseBean bean = new ResponseBean();
-        try {
-            paymentService.paid(paymentDTO, bean);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            bean.setMessage(Constant.MSG_SERVER_ERROR);
-        }
-        return ResponseEntity.ok(bean);
-    }
 
     @RequestMapping(value = "/device/properties", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public byte[] getPropertiesData(@RequestParam Long deviceId) {
@@ -92,39 +53,6 @@ public class AdminController {
         }
         return ResponseEntity.ok(bean);
     }
-
-    @RequestMapping(path = "/crops", method = RequestMethod.GET)
-    public ResponseEntity getCrops(@RequestParam(name = "page", required = false) Integer page,
-                                      @RequestParam(name = "size", required = false) Integer size,
-                                      @RequestParam(name = "status", required = false) Integer status,
-                                      @RequestParam(name = "key", required = false) String key) {
-
-        ResponseBean bean = new ResponseBean();
-        try {
-            cropService.getCrops(bean, page, size, status, key);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            bean.setMessage(Constant.MSG_SERVER_ERROR);
-        }
-        return ResponseEntity.ok(bean);
-    }
-
-    @RequestMapping(path = "/invoices", method = RequestMethod.GET)
-    public ResponseEntity getInvoices(@RequestParam(name = "page", required = false) Integer page,
-                                   @RequestParam(name = "size", required = false) Integer size,
-                                   @RequestParam(name = "status", required = false) Integer status,
-                                   @RequestParam(name = "key", required = false) String key) {
-
-        ResponseBean bean = new ResponseBean();
-        try {
-            invoiceService.getInvoices(bean, page, size, status, key);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            bean.setMessage(Constant.MSG_SERVER_ERROR);
-        }
-        return ResponseEntity.ok(bean);
-    }
-
 
     @RequestMapping(path = "/users", method = RequestMethod.GET)
     public ResponseEntity getUsers(@RequestParam(name = "page", required = false) Integer page,

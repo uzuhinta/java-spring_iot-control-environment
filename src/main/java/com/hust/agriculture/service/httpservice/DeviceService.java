@@ -25,6 +25,4 @@ public interface DeviceService {
     void getDevices(ResponseBean bean, Integer page, Integer size, Integer status, String key) throws Exception;
 
     ByteArrayInputStream getData(Long deviceId) throws Exception;
-
-    void control(ResponseBean bean, User userActive, ControlMQTT controlMQTT) throws Exception;
 }
