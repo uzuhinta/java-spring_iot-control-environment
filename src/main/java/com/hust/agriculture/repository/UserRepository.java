@@ -31,7 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(
             value = "select u from User u " +
-                    "where u.role.ID = 1 " +
+                    "where u.role.ID = 1 or u.role.ID = 3" +
                     "and u.status = :status " +
                     "and lower(u.username) like lower(concat('%', :key, '%'))" +
                     "order by u.ID desc"

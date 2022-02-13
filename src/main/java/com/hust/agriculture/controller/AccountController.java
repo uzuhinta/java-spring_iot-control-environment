@@ -36,6 +36,7 @@ public class AccountController {
             User user = (User) authentication.getPrincipal();
             bean.setError(Constant.ERROR_CODE_OK);
             bean.addData("roles", Arrays.asList(user.getRole().getName()));
+            bean.addData("ID", user.getID());
             bean.addData("name", user.getFullName());
             bean.addData("username", user.getUsername());
             bean.addData("email", user.getEmail());
@@ -54,8 +55,13 @@ public class AccountController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             User userActive = (User) authentication.getPrincipal();
+            System.out.println("userActive" + userActive);
             if(userActive.getRole().getID().equals(Constant.ROLE_USER_ADMIN) || userActive.getID() == user.getID()){
-                userService.updateInfo(user, bean);
+                userActive.setAddress(user.getAddress());
+                userActive.setFullName(user.getFullName());
+                userActive.setEmail(user.getEmail());
+                userActive.setPhoneNumber(user.getPhoneNumber());
+                userService.updateInfo(userActive, bean);
             }else{
                 bean.setError(Constant.ERROR_CODE_NOK);
                 bean.setMessage(Constant.MSG_NOT_AUTHORIZATION);

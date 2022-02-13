@@ -68,7 +68,19 @@ public class AgricultureApplication implements CommandLineRunner {
 
         Role techniqueRole = new Role();
         techniqueRole.setName("TECHNIQUE");
-        roleRepository.saveAndFlush(techniqueRole);
+//        roleRepository.saveAndFlush(techniqueRole);
+
+        User techniqueAccount = new User();
+        techniqueAccount.setUsername("quannar1782");
+        System.out.println("password" + password);
+        techniqueAccount.setPassword(password);
+        techniqueAccount.setAddress("Hoang Mai, TECHNIQUE");
+        techniqueAccount.setFullName("Ba QuanTECHNIQUE");
+        techniqueAccount.setEmail("quannar1782@gmail.com");
+        techniqueAccount.setPhoneNumber("085");
+        techniqueAccount.setStatus(Constant.STATUS_ACTIVE);
+        techniqueAccount.setRole(techniqueRole);
+        userRepository.save(techniqueAccount);
 
     }
 }
