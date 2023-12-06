@@ -1,11 +1,14 @@
-# Egg
+# Iot - Control environment (server + admin)
 
-Requirement:
+This is the server for app : https://github.com/uzuhinta/react-native_iot-control-environment
+
+## Tech stack
 
 -   Java 8
 -   MySQL
+-   VueJs
 
-Instruction
+## Instruction
 
 ```sh
 # Step 1: install dependency
